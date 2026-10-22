@@ -197,12 +197,13 @@ def add_cliente():
 @cliente_bp.route('/delete/<int:cliente_id>', methods = ['DELETE'])
 @login_required
 def delete_cliente(cliente_id):
-    cliente = Clientes.query.get(cliente_id)
-    if cliente:
-        db.session.delete(cliente)
-        db.session.commit()
-        return jsonify ({"mensagem":"Cliente excluído com sucesso"}), 204
-    return jsonify ({"mensagem":"Cliente não encontrado"}), 404
+    locacao_associada = Clientes.query.filter_by(clientes_id = cliente_id).first()
+    if locacao_associada:
+        return jsonify ({"mensagem":"Cliente possui locações e não pode ser excluido"}), 404
+    db.session.delete(cliente)
+    db.session.commit()
+    return jsonify ({"mensagem":"Cliente excluído com sucesso"}), 204
+    
 
 @cliente_bp.route('/<int:cliente_id>', methods = ['GET'])
 @login_required

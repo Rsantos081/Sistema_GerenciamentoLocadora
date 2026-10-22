@@ -37,10 +37,16 @@ def registro():
     
     if not nome or not sobrenome or not cpf or not senha:
         return jsonify ({"mensagem":"Dados invalidos, observe os campos"}), 400
-    if Administrador.query.filter_by((nome == nome) | (Administrador.cpf == cpf)).first():
-        return jsonify ({"mensagem":"Administrador ja existe"}), 402
+    administrador_existente = Administrador.query.filter_by(cpf=cpf).first()
+    if administrador_existente:
+        return jsonify({"mensagem": "Já existe um administrador com esse CPF"}), 409
     
-    admin = Administrador(nome=nome , sobrenome=sobrenome , cpf = cpf, senha=generate_password_hash(senha)) # Campo responsavel por não cadastrar uma senha padrao no banco como (minha_senha123), ele cadastrar uma pedaço de texto de string aleatorias.
+    admin = Administrador(
+          nome=nome, 
+          sobrenome=sobrenome,
+          cpf = cpf, 
+          senha=generate_password_hash(senha) # Campo responsavel por não cadastrar uma senha padrao no banco como (minha_senha123), ele cadastrar uma pedaço de texto de string aleatorias.
+          ) 
     db.session.add(admin)
     db.session.commit()
     return jsonify ({"mensagem":"Administrador registrado com sucesso"}), 201
