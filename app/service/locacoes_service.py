@@ -30,7 +30,7 @@ def criar_locacao(data):
     if not cliente:
         raise RegraNegocioError("Cliente não encontrado")
 
-    inventario = Inventario.query.get(data.get('inventario_id'))
+    inventario = Inventario.query.filter_by(id=data.get('inventario_id')).with_for_update().first()
     if not inventario:
         raise RegraNegocioError("Veiculo não Encontrado")
     
@@ -40,7 +40,8 @@ def criar_locacao(data):
     locacao_aberta = Locacoes.query.filter(
         Locacoes.inventario_id == data['inventario_id'],
         Locacoes.status_locacao.in_(STATUS_QUE_BLOQUEIAM_VEICULO)
-    ).first()
+    ).with_for_update().first()
+    
     if locacao_aberta:
         raise RegraNegocioError("Veiculo ja esta alugado", status_code= 409)
     try: 

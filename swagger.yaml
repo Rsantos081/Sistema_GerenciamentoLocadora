@@ -10,8 +10,7 @@ info:
     As rotas protegidas utilizam a sessão do Flask-Login (cookie `session`),
     criada em `POST /auth/login`. O `POST /auth/registro` também exige login,
     então o primeiro administrador deve ser criado diretamente no banco.
-    Valores monetários (`Decimal`) e datas são serializados pelo Flask como texto:
-    `"500.00"` e `"Thu, 08 Oct 2026 00:00:00 GMT"`.
+
   version: 1.0.0
   contact:
     name: Rental System
